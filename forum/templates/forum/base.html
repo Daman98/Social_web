@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		{%block title%}Fluxo-De-Tudo{%endblock%}
+	</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="shortcut icon" href="http://www.iconj.com/ico/d/z/dzkfhpqpx7.ico" type="image/x-icon" />
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.1/tinymce.min.js"></script>
+	<script type="text/javascript" src="http://yourjavascript.com/07503021211/custom.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Raleway|Source+Sans+Pro" rel="stylesheet">
+
+	<style type="text/css">
+
+		.comments{
+			padding-top: 5px;
+			background-color:#eff1f4;
+			border-radius: 5px;
+			border:5px solid #edf3fc;
+		}
+		.comment{
+			border:5px solid #eff1f4;
+			font-size: 15px;
+		}
+		.msgclass{
+			background-color:#eff1f4;
+			padding-top: 10px;
+			padding-bottom: 20px;
+			padding-left: 30px;
+
+		}
+		.posts{
+			padding-top: 10px;
+			background-color:#eff1f4;
+			padding-left: 30px;
+			padding-bottom: 15px;
+			font-size: 16px;
+			border-radius: 8px;
+			border:5px solid #edf3fc;
+		}
+		.post_detail{
+			font-size: 18px;
+		}
+		.post_text{
+			font-size:16px;
+		}
+		{%block ucss%}{%endblock%}
+	</style>
+	
+</head>
+
+<body>
+	<script type="text/javascript">
+		{%if user.is_authenticated%}
+		function getmsg() {
+			$.ajax({
+				url: '/messagec',
+				success: function(data) {
+					var htm='';
+					if(data!=0) htm='<span class="glyphicon glyphicon-envelope" style="color:red"></span> Messages('+data+')';
+					else htm='<span class="glyphicon glyphicon-envelope"></span> Messages';
+					$('#Messages').html(htm);
+				},
+				error: function(){
+					console.log('Ajax Error');
+				}
+
+			});
+		}
+		$(function(){
+			getmsg();
+		});
+		getmsg();
+		setInterval("getmsg()", 1000);
+		{%endif%}
+	</script>
+	<nav class='navbar navbar-inverse navbar-fixed-top'>
+		<div class='container-fluid'>
+			<div class='navbar-header'>
+				<a class="navbar-brand" href="/"><img src="http://sk.uploads.im/t/8tlJv.png" border="0" style="width:20px; display:inline"/> Fluxo-De-Tudo</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li {%block nav-home%}{%endblock%}><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+				<li {%block nav-msg%}{%endblock%}><a href="/messages" id='Messages'><span class="glyphicon glyphicon-envelope"></span> Messages</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<form id="searchform" action="/search/"  method='get' accept-charset="utf-8" class="navbar-form navbar-left">
+					<div class="input-group">
+						<input type="text" name='q' class="form-control" placeholder="Search">
+						<div class="input-group-btn">
+							<button class="btn btn-default" type="submit">
+								<i class="glyphicon glyphicon-search"></i>
+							</button>
+						</div>
+					</div>
+				</form>
+				{%if user.is_authenticated%}
+				<li {%block nav-profile%}{%endblock%}><a href="/profile/{{user}}">{{user.first_name}} {{user.last_name}} <span class="glyphicon glyphicon-user"></span> </a></li> 
+				<li ><a href="/logout">Logout <span class="glyphicon glyphicon-log-out"></span> </a></li>
+				{%else%}
+				<li {%block nav-signup%}{%endblock%}><a href="/signup">Sign Up <span class="glyphicon glyphicon-user"></span> </a></li>
+				<li {%block nav-login%}{%endblock%}><a href="/login">Login <span class="glyphicon glyphicon-log-in"></span> </a></li>
+
+				{%endif%}
+			</ul>
+		</div>
+	</nav>
+	<br>
+	<div class="content container" style="margin-top:50px">
+		{% block content %}
+		{% endblock %}
+	</div>
+</body>
+{%block loadfooter%}
+{%endblock%}
+</html>

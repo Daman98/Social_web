@@ -1,0 +1,72 @@
+{% extends 'forum/base.html' %}
+{%block title%}Forum{%endblock%}
+{%block ucss%}
+.modal-dialog{
+    width:800px;
+}
+{%endblock%}
+{% block nav-home%}class="active"{%endblock%}
+{% block content %}
+{%if user.is_authenticated%}
+
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">New Post</button>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">New Post</h4>
+    </div>
+    <div class="modal-body">
+        <div class='input-group'>
+            <form method="POST" class="post-form">{% csrf_token %}
+                {%autoescape off%}{{ form.as_p }}{%endautoescape%}
+                <button type="submit" class="save btn btn-default">Post</button>
+            </form>
+            <br>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+{%else%}
+<h3>To Add Posts You Need To <a href='/login'>Login</a> First</h3>
+{%endif%}
+
+<br>
+<h2> Recent Posts </h2>
+{% for fp in latest_posts %}
+<p class="posts">
+Topic: <a href = '/posts/{{fp.id}}'> {{fp.topic}} </a>
+<br>
+<b> By: </b> <a href="/profile/{{fp.author}}">{{fp.author.first_name}} {{fp.author.last_name}}</a>
+<br> Posted in: <a href = '/category/{{fp.category}}'> {{fp.category.name}}</a>
+<br>Posted On : {{fp.date}} 
+</p>
+{% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if latest_posts.has_previous %}
+        <a href="?page={{ latest_posts.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ latest_posts.number }} of {{ latest_posts.paginator.num_pages }}.
+        </span>
+
+        {% if latest_posts.has_next %}
+        <a href="?page={{ latest_posts.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}
